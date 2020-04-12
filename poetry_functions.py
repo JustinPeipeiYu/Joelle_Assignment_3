@@ -20,6 +20,7 @@ def ALL_CAPS(text: str) -> str:
     'JACK AND JILL WENT UP THE HILL TO FETCH A PAIL OF WATER. JACK FELL DOWN AND BROKE HIS CROWN AND JILL CAME TUMBLING AFTER.'
     """
     return text.upper()
+
 def clean_word(s: str) -> str:
     """Return a new string based on s in which all letters have been converted
     to uppercase and whitespace and punctuation characters have been stripped
@@ -111,24 +112,35 @@ def get_rhyme_scheme(poem_pronunciation: POEM_PRONUNCIATION) -> List[str]:
     """
     # if the last pronounciation is the same then assign the same rhyme scheme
     # get last elements of inner list and if it's the same produce a rhyme
-    list_of_keys = []
-    last_phonemes = []
+    list_of_last_sounds = {}
     alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    
-    
+    last_sound = ""
+    line_number = 0
+    index_of_alphabet = 0
     for line in poem_pronunciation:
-        for word in line:
-            for letter in word: 
-                last_phonemes.append([letter[-1] for letter in word])
-                
-                rhyme_schemes = {}
-                for i in range(len(last_phonemes)):
-                    last_phonemes[alphabet[i]] = last_phonemes[i]                
- 
-    for key in ryhme_schemes.keys():
-        list_of_keys = list_of_keys.append(keys)   
-        
-    return list_of_keys
+        index_last_syllable = -1
+        line_number += 1
+        while not line[-1][index_last_syllable][-1] in '0123456789': 
+                index_last_syllable -= 1
+        if index_last_syllable != -1:
+            last_sound = line[-1][index_last_syllable][:-1] + line[-1][-1]
+        else:
+            last_sound = line[-1][index_last_syllable][:-1]
+        if last_sound not in list_of_last_sounds:
+            list_of_last_sounds[last_sound] = [line_number]
+        else:
+            list_of_last_sounds[last_sound].append(line_number)
+    list_of_rhyme_letters = {}
+    for last_sound in list_of_last_sounds:
+        list_of_rhyme_letters[alphabet[index_of_alphabet]] = list_of_last_sounds[last_sound] 
+        index_of_alphabet += 1
+    poem_rhyme_scheme = []
+    for i in range(1, len(poem_pronunciation) + 1):
+        for rhyme_letter in list_of_rhyme_letters:
+            for line_number in list_of_rhyme_letters[rhyme_letter]:
+                if line_number == i:
+                    poem_rhyme_scheme.append(rhyme_letter)
+    return poem_rhyme_scheme
 
 def get_num_syllables(poem_pronunciation: POEM_PRONUNCIATION) -> List[int]:
     """Return a list of the number of syllables in each poem_pronunciation
