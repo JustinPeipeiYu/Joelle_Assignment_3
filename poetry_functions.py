@@ -36,9 +36,8 @@ def clean_word(s: str) -> str:
     return result
 
 def clean_poem(raw_poem: str) -> CLEAN_POEM:
-    r"""Return the non-blank, non-empty lines of poem, with whitespace removed
+    """Return the non-blank, non-empty lines of poem, with whitespace removed
     from the beginning and end of each line and all words capitalized.
-    r = \\n
     >>> clean_poem('The first line leads off,\\n\\n\\nWith a gap before the next.\\n    Then the poem ends.\\n')
     [['THE', 'FIRST', 'LINE', 'LEADS', 'OFF'], ['WITH', 'A', 'GAP', 'BEFORE', 'THE', 'NEXT'], ['THEN', 'THE', 'POEM', 'ENDS']]
     """
@@ -67,20 +66,18 @@ def extract_phonemes(cleaned_poem: CLEAN_POEM, word_to_phonemes: PRONOUNCING_DIC
     >>> extract_phonemes([['YES'], ['NO', 'YES']], word_to_phonemes)
     [[['Y', 'EH1', 'S']], [['N', 'OW1'], ['Y', 'EH1', 'S']]]
     """
+    
     master_list = []
-
     for line in cleaned_poem:
-        line = []
+        line_list = []
         for word in line:
             #words = []
-            value = word_to_phenomes[word]
+            value = word_to_phonemes[word]
             #convert word into the pronouncing dictionary
             #words.append(value)
-            line.append(value)
+            line_list.append(value)
             #add to the list of the line
-            print(line)
-        master_list.append(line)
-    
+        master_list.append(line_list)
     return master_list
 
 def phonemes_to_str(poem_pronunciation: POEM_PRONUNCIATION) -> str:
@@ -95,16 +92,11 @@ def phonemes_to_str(poem_pronunciation: POEM_PRONUNCIATION) -> str:
     sentence = ''
     
     for line in poem_pronunciation:
-        line.append('\n')
+        line_list = []
         for word in line:
-            word.append(' | ')
-            for meta_char in word:
-                space = ' '.join(word)
-                poem_lines = poem_lines.append(word)
-        
-    sentence = ''.join(poem_pronunciation)
-
-    return sentence
+            line_list.append(" ".join(word))
+        poem_lines.append(" | ".join(line_list))
+    return "\\n".join(poem_lines)
 
 
 def get_rhyme_scheme(poem_pronunciation: POEM_PRONUNCIATION) -> List[str]:
@@ -143,18 +135,16 @@ def get_num_syllables(poem_pronunciation: POEM_PRONUNCIATION) -> List[int]:
     line.
     
     >>> get_num_syllables([[['IH0', 'N']], [['S', 'IH0', 'N']]])
-    [2, 3]
+    [1, 1]
     """
     counting_list = []
-    count = 0
-    
     for line in poem_pronunciation:
+        count = 0
         for word in line:
             for letter in word:
-                count+=1
-            counting_list.append(count)
-            count = 0    
-                
+                if letter[-1] in '0123456789':
+                    count += 1
+        counting_list.append(count)        
     return counting_list
 
 
